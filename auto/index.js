@@ -3,7 +3,10 @@ var puppeteer = require('puppeteer');
 const main = (id, pass) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const browser = await puppeteer.launch({headless: true});
+            const browser = await puppeteer.launch({
+                headless: true,
+                args: ['--no-sandbox', '--disable-setuid-sandbox']
+            });
             const page = await browser.newPage();
             await page.setViewport({ width: 1366, height: 768});
             await page.goto("https://www.icloudemserp.com/tpct/");
