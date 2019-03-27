@@ -10,7 +10,7 @@ router.post('/scrap', (req, res) => {
     main(id, pass).then((result) => {
         res.status(200).send({result})
     }).catch((err) => {
-        res.status(200).send({error: 'Id or password incorrect'})
+        res.status(400).send({error: 'Id or password incorrect'})
     });;
 });
 

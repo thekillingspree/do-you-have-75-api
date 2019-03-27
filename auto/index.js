@@ -10,9 +10,11 @@ const main = (id, pass) => {
             const page = await browser.newPage();
             await page.setViewport({ width: 1366, height: 768});
             await page.goto("https://www.icloudemserp.com/tpct/");
-            await login(page, id, pass);
-            const result = await goToAttendance(page);
-            resolve(result);
+            const result = await login(page, id, pass);
+            if (result.length > 0) 
+                resolve(result);
+            else    
+                reject();
             await browser.close();
         } catch (e) {
             reject();
@@ -41,7 +43,6 @@ const goToAttendance = async (page) => {
 }
 
 const login = async (page, id, pass) => {
-    console.log("Logging in");
     try {
         await page.evaluate((id, pass) => {
             
@@ -54,10 +55,11 @@ const login = async (page, id, pass) => {
             bid.value = 17;
             form.submit();
         }, id, pass);
-        await page.waitForNavigation({waitUntil: 'load', timeout: 10000});
-        console.log("Logged In.");
+        await page.waitForNavigation({waitUntil: 'load', timeout: 5000});
+        const result = await goToAttendance(page);
+        return result;
     } catch(e) {
-        console.log(e);
+        return [];
     }
 } 
 
