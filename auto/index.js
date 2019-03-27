@@ -11,7 +11,8 @@ const main = (id, pass) => {
             await page.setViewport({ width: 1366, height: 768});
             await page.goto("https://www.icloudemserp.com/tpct/");
             const result = await login(page, id, pass);
-            if (result.length > 0) 
+            console.log(result);
+            if (result) 
                 resolve(result);
             else    
                 reject();
@@ -59,7 +60,8 @@ const login = async (page, id, pass) => {
         const result = await goToAttendance(page);
         return result;
     } catch(e) {
-        return [];
+        console.log(e);
+        return false;
     }
 } 
 
