@@ -1,8 +1,8 @@
 {
-  "name": "erp_scrapper",
+  "name": "attendance",
   "version": "1.0.0",
-  "description": "ERP scrapper built with Puppeteer",
-  "main": "app.js",
+  "description": "Do you have 75% Attendance?",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js"
