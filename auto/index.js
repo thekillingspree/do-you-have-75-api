@@ -13,7 +13,6 @@ const main = (id, pass) => {
             await login(page, id, pass);
             const result = await goToAttendance(page);
             resolve(result);
-            await page.screenshot({path: `attendance.png`});
             await browser.close();
         } catch (e) {
             reject();
