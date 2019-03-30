@@ -4,7 +4,6 @@ const main = (id, pass) => {
     return new Promise(async (resolve, reject) => {
         try {
             const browser = await puppeteer.launch({
-                headless: true,
                 args: ['--no-sandbox', '--disable-setuid-sandbox']
             });
             const page = await browser.newPage();
