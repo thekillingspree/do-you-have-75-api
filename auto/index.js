@@ -29,14 +29,29 @@ const goToAttendance = async (page) => {
         const trs = await page.$$("#searchfrom > table.table.table-bordered.table.responsive > tbody > tr");
         const result = [];
         let avg = 0;
-        for (let i = 1; i < trs.length; i++) {
-            let attendance = await trs[i].$eval("td:nth-child(5)", td => td.innerText);
+        for (let i = 1; i < trs.length - 1; i++) {
+            let attendance = await trs[i].$eval("td:nth-child(6)", td => td.innerText);
             attendance = Number(attendance);
             const sub = await trs[i].$eval("td:nth-child(3)", td => td.innerText);
-            result.push({sub, attendance})
+            const count = await trs[i].$eval("td:nth-child(5)", td => td.innerText.split('/'));
+            const current = Number(count[0]);
+            const total = Number(count[1]);
+            result.push({sub, attendance, count: {current, total}})
             avg += attendance;
         }
-        return {result, avg: (avg / (trs.length - 1))}
+        const summaryElement = trs[trs.length - 1];
+        const summary = await summaryElement.$eval("td:nth-child(2)", td => {
+            const txt = td.innerText.split('/');
+            const current = Number(txt[0]);
+            const total = Number(txt[1]);
+            const per = (current / total) * 100;
+            return {
+                current,
+                total,
+                per
+            }
+        });
+        return {result, avg: (avg / (trs.length - 2)), summary}
     } catch(e) {
         console.log(e);
     }
