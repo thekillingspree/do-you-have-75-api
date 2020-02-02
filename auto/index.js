@@ -9,20 +9,18 @@ const main = (id, pass) => {
             const page = await browser.newPage();
             await page.setViewport({ width: 1366, height: 768});
             await page.goto("https://www.icloudemserp.com/tpct/");
-            const result = await login(page, id, pass);
-            console.log(result);
+            const result = await login({browser, page}, id, pass);
             if (result) 
                 resolve(result);
             else    
                 reject();
-            await browser.close();
         } catch (e) {
             reject();
         }
     });
 }
 
-const goToAttendance = async (page) => {
+const getAttendance = async (page) => {
     // const main = await page.frames().find(frame => frame.name() == "main");
     await page.goto("https://www.icloudemserp.com/corecampus/student/attendance/subwise_attendace_new.php");
     try {
@@ -57,7 +55,53 @@ const goToAttendance = async (page) => {
     }
 }
 
-const login = async (page, id, pass) => {
+const getRecentAssignments = async (page, count=5) => {
+    try {
+        await page.goto("https://www.icloudemserp.com/corecampus/student/assignments/myassignments.php")
+        const assignmentTable = await page.$('body > table > tbody > tr > td:nth-child(2) > table.table.table-bordered')
+        let assignmentRows = await assignmentTable.$$eval("tbody > tr", (elements) => {
+            elements = elements.filter(e => e.getAttribute("bgcolor"))
+            elements = elements.map(e => ({
+                subject: e.querySelector("td:nth-child(3) > a").innerText,
+                name: e.querySelector("td:nth-child(4)").innerText,
+                due: e.querySelector("td:nth-child(2)").innerText,
+            }))
+            return elements
+        });
+        console.log(assignmentRows)
+        return assignmentRows.slice(0, count)
+    } catch(e) {
+        throw new Error(e)
+    }
+}
+
+const getStudentInfo = async (page) => {
+    try {
+        await page.goto("https://www.icloudemserp.com/corecampus/student/myprofile/myprofile.php")
+        
+        const student = await page.$eval('#home > div.row', row => {
+            const name = row.querySelector('div:nth-child(2) > h4 > span.middle').innerText;
+            const sem = row.querySelector('div:nth-child(3) > div.profile-user-info > div:nth-child(9) > div.profile-info-value > span').innerText;
+            const stream = row.querySelector('div:nth-child(3) > div.profile-user-info > div:nth-child(8) > div.profile-info-value > span').innerText;
+            const dob = row.querySelector('div:nth-child(2) > div.profile-user-info > div:nth-child(5) > div.profile-info-value > span').innerText;
+            return {
+                name,
+                sem,
+                stream,
+                dob
+            }
+        })
+         
+        return student
+
+    } catch(e) {
+        throw new Error(e)
+    }
+
+}
+
+
+const login = async ({browser, page}, id, pass) => {
     try {
         await page.evaluate((id, pass) => {
             
@@ -70,13 +114,12 @@ const login = async (page, id, pass) => {
             bid.value = 17;
             form.submit();
         }, id, pass);
-        await page.waitForNavigation({waitUntil: 'load', timeout: 5000});
-        const result = await goToAttendance(page);
-        return result;
+        await page.waitForNavigation({waitUntil: 'load', timeout: 4000});
+        return {browser, page}
     } catch(e) {
         console.log(e);
-        return false;
+        throw new Error('Unable to Login')
     }
 } 
 
-module.exports = {main}
+module.exports = {main, getAttendance, getRecentAssignments, getStudentInfo}
