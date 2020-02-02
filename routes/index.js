@@ -32,7 +32,20 @@ router.post('/verify', decryptMiddleWare, async (req, res) => {
     }
 })
 
-router.post('/scrap', decryptMiddleWare, async (req, res) => {
+router.post('/attendance', decryptMiddleWare, async (req, res) => {
+    const {id, pass} = req.body;
+    try {
+        const {page, browser} = await main(id, pass)
+        const result = await getAttendance(page)
+        res.status(200).send({result})
+        await browser.close();
+    } catch(e) {
+        console.log(e)
+        res.status(400).send({error: 'Id or password incorrect'})
+    }
+});
+
+router.post('/scrap', async (req, res) => {
     const {id, pass} = req.body;
     try {
         const {page, browser} = await main(id, pass)
