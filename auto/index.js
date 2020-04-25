@@ -16,6 +16,7 @@ const main = (id, pass) => {
             else    
                 reject();
         } catch (e) {
+            console.error(e)
             reject();
         }
     });
@@ -58,23 +59,27 @@ const getAttendance = async (page) => {
 
 const getRecentAssignments = async (page, count=5, stream="", subject="") => {
     try {
+        subject = subject.toLowerCase()
         await page.goto("https://www.icloudemserp.com/corecampus/student/assignments/myassignments.php")
         const assignmentTable = await page.$('body > table > tbody > tr > td:nth-child(2) > table.table.table-bordered')
         let assignmentRows = await assignmentTable.$$eval("tbody > tr", (elements) => {
-            elements = elements.filter(e => e.getAttribute("bgcolor"))
+            elements = elements.filter(e => e.getAttribute("bgcolor") != undefined)
             elements = elements.map(e => {
-
+                
+                
                 let reference =  e.querySelector("td:nth-child(8) > font > a");
                 let assignmentFile =  e.querySelector("td:nth-child(7) > font > a");
                 reference = reference ? reference.href : assignmentFile ? assignmentFile.href : "No File"
+                const due = e.querySelector("td:nth-child(2)").innerText
 
                 return {
                     subject: e.querySelector("td:nth-child(3) > a").innerText,
                     name: e.querySelector("td:nth-child(4)").innerText,
-                    due: e.querySelector("td:nth-child(2)").innerText,
+                    due,
                     reference
                 }
             })
+            elements = elements.filter(e => new Date(e.due).getFullYear() === new Date().getFullYear())
             return elements
         });
         if (stream && subjects[stream] && subject) {
@@ -82,7 +87,10 @@ const getRecentAssignments = async (page, count=5, stream="", subject="") => {
             const subKey = findSubject(stream, subject)
             console.log(stream, subKey)
             if (subKey.length > 0)
-                assignmentRows = assignmentRows.filter(assignment => subKey.includes(assignment.subject))
+                assignmentRows = assignmentRows.filter(assignment => {
+                    console.log(assignment.subject)
+                    return subKey.includes(assignment.subject)
+                })
             else
                 return []
         }
@@ -99,7 +107,7 @@ const findSubject = (stream, subject) => {
         console.log(element)
         console.log(element, subject)
         for (const s of element) {
-            if (s.includes(subject) || subject.includes(s)) 
+            if (s.includes(subject) || key.toLowerCase() == subject) 
                 results.push(key)
         }
     }

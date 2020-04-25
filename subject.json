@@ -7,44 +7,60 @@
         "System Programming & Complier Construction": [
             "spcc",
             "system programming",
-            "system software"
+            "system software",
+            "system software lab",
+            "system programming and complier construction"
         ],
         "System software Lab": [
             "spcc",
             "system programming",
-            "system software"
+            "system software",
+            "system software lab",
+            "system programming and complier construction"
         ],
         "Software Engineering": [
             "se",
-            "software engineering"
+            "software engineering",
+            "software engineering lab"
         ],
         "Software Engineering Lab": [
             "se",
-            "software engineering"
+            "software engineering",
+            "software engineering lab"
         ],
         "Cryptography & System Security": [
             "crypto",
             "cryptography",
             "system security",
+            "system security lab",
             "security",
-            "css"
+            "css",
+            "cryptography and system security"
         ],
         "System Security Lab": [
             "crypto",
             "cryptography",
             "system security",
             "security",
-            "css"
+            "system security lab",
+            "css",
+            "cryptography and system security",
+            "cryptography & system security"
         ],
         "Data Warehousing & Mining": [
             "dwm",
             "data mining",
-            "data warehousing"
+            "data warehousing",
+            "data warehousing and mining",
+            "data warehousing and mining lab",
+            "data warehousing & mining lab"
         ],
         "Data Warehousing & Mining Lab": [
             "dwm",
             "data mining",
-            "data warehousing"
+            "data warehousing",
+            "data warehousing and mining",
+            "data warehousing & mining"
         ],
         "Mini-Project": [
             "project",
