@@ -15,3 +15,7 @@
 
 # Node.js dependencies:
 node_modules/
+samples/
+muquestions/
+out/
+bot/

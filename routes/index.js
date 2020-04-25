@@ -24,8 +24,9 @@ router.post('/verify', decryptMiddleWare, async (req, res) => {
     const {id, pass} = req.body;
     try {
         const {page, browser} = await main(id, pass)
+        const result = await getStudentInfo(page)
         await browser.close();
-        return res.status(200).send({result: 'User verified.'})
+        return res.status(200).send({result})
     } catch(e) {
         console.log(e)
         res.status(400).send({error: 'Id or password incorrect'})
@@ -60,10 +61,10 @@ router.post('/scrap', async (req, res) => {
 
 router.post('/assignments', decryptMiddleWare, async (req, res) => {
     const {id, pass} = req.body;
-    const {count} = req.query
+    const {count, subject, stream} = req.query
     try {
         const {page, browser} = await main(id, pass)
-        const result = await getRecentAssignments(page, count)
+        const result = await getRecentAssignments(page, count, stream, subject)
         res.status(200).send({result})
         await browser.close();
     } catch(e) {

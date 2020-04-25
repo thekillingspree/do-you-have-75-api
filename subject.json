@@ -1,0 +1,54 @@
+{
+    "COMP": {
+        "Machine Learning": [
+            "ml",
+            "machine learning"
+        ],
+        "System Programming & Complier Construction": [
+            "spcc",
+            "system programming",
+            "system software"
+        ],
+        "System software Lab": [
+            "spcc",
+            "system programming",
+            "system software"
+        ],
+        "Software Engineering": [
+            "se",
+            "software engineering"
+        ],
+        "Software Engineering Lab": [
+            "se",
+            "software engineering"
+        ],
+        "Cryptography & System Security": [
+            "crypto",
+            "cryptography",
+            "system security",
+            "security",
+            "css"
+        ],
+        "System Security Lab": [
+            "crypto",
+            "cryptography",
+            "system security",
+            "security",
+            "css"
+        ],
+        "Data Warehousing & Mining": [
+            "dwm",
+            "data mining",
+            "data warehousing"
+        ],
+        "Data Warehousing & Mining Lab": [
+            "dwm",
+            "data mining",
+            "data warehousing"
+        ],
+        "Mini-Project": [
+            "project",
+            "mini project"
+        ]
+    }
+}

@@ -1,9 +1,10 @@
 var puppeteer = require('puppeteer');
-
+var subjects = require('../subject.json')
 const main = (id, pass) => {
     return new Promise(async (resolve, reject) => {
         try {
             const browser = await puppeteer.launch({
+                headless: true,
                 args: ['--no-sandbox', '--disable-setuid-sandbox']
             });
             const page = await browser.newPage();
@@ -55,24 +56,54 @@ const getAttendance = async (page) => {
     }
 }
 
-const getRecentAssignments = async (page, count=5) => {
+const getRecentAssignments = async (page, count=5, stream="", subject="") => {
     try {
         await page.goto("https://www.icloudemserp.com/corecampus/student/assignments/myassignments.php")
         const assignmentTable = await page.$('body > table > tbody > tr > td:nth-child(2) > table.table.table-bordered')
         let assignmentRows = await assignmentTable.$$eval("tbody > tr", (elements) => {
             elements = elements.filter(e => e.getAttribute("bgcolor"))
-            elements = elements.map(e => ({
-                subject: e.querySelector("td:nth-child(3) > a").innerText,
-                name: e.querySelector("td:nth-child(4)").innerText,
-                due: e.querySelector("td:nth-child(2)").innerText,
-            }))
+            elements = elements.map(e => {
+
+                let reference =  e.querySelector("td:nth-child(8) > font > a");
+                let assignmentFile =  e.querySelector("td:nth-child(7) > font > a");
+                reference = reference ? reference.href : assignmentFile ? assignmentFile.href : "No File"
+
+                return {
+                    subject: e.querySelector("td:nth-child(3) > a").innerText,
+                    name: e.querySelector("td:nth-child(4)").innerText,
+                    due: e.querySelector("td:nth-child(2)").innerText,
+                    reference
+                }
+            })
             return elements
         });
-        console.log(assignmentRows)
+        if (stream && subjects[stream] && subject) {
+            
+            const subKey = findSubject(stream, subject)
+            console.log(stream, subKey)
+            if (subKey.length > 0)
+                assignmentRows = assignmentRows.filter(assignment => subKey.includes(assignment.subject))
+            else
+                return []
+        }
         return assignmentRows.slice(0, count)
     } catch(e) {
         throw new Error(e)
     }
+}
+
+const findSubject = (stream, subject) => {
+    const results = []
+    for (const key in subjects[stream]) {
+        const element = subjects[stream][key];
+        console.log(element)
+        console.log(element, subject)
+        for (const s of element) {
+            if (s.includes(subject) || subject.includes(s)) 
+                results.push(key)
+        }
+    }
+    return results;
 }
 
 const getStudentInfo = async (page) => {
