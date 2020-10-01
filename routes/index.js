@@ -2,8 +2,8 @@ const express = require("express");
 const _ = require("lodash");
 const CryptoJS = require("crypto-js");
 const {
-    main, 
-    getAttendance, 
+    main,
+    getAttendance,
     getRecentAssignments,
     getStudentInfo
 } = require("../auto");
@@ -26,7 +26,7 @@ router.post('/verify', decryptMiddleWare, async (req, res) => {
         const {page, browser} = await main(id, pass)
         const result = await getStudentInfo(page)
         await browser.close();
-        return res.status(200).send({result})
+        return res.status(201).send({result})
     } catch(e) {
         console.log(e)
         res.status(400).send({error: 'Id or password incorrect'})
@@ -38,7 +38,7 @@ router.post('/attendance', decryptMiddleWare, async (req, res) => {
     try {
         const {page, browser} = await main(id, pass)
         const result = await getAttendance(page)
-        res.status(200).send({result})
+        res.status(201).send({result})
         await browser.close();
     } catch(e) {
         console.log(e)
@@ -51,7 +51,7 @@ router.post('/scrap', async (req, res) => {
     try {
         const {page, browser} = await main(id, pass)
         const result = await getAttendance(page)
-        res.status(200).send({result})
+        res.status(201).send({result})
         await browser.close();
     } catch(e) {
         console.log(e)
@@ -65,7 +65,7 @@ router.post('/assignments', decryptMiddleWare, async (req, res) => {
     try {
         const {page, browser} = await main(id, pass)
         const result = await getRecentAssignments(page, count, stream, subject)
-        res.status(200).send({result})
+        res.status(201).send({result})
         await browser.close();
     } catch(e) {
         console.log(e)
@@ -78,7 +78,7 @@ router.post('/student', decryptMiddleWare, async (req, res) => {
     try {
         const {page, browser} = await main(id, pass)
         const result = await getStudentInfo(page)
-        res.status(200).send({result})
+        res.status(201).send({result})
         await browser.close();
     } catch(e) {
         console.log(e)
